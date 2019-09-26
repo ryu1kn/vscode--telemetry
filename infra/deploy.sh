@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -euo pipefail
+
+current_dir="$(dirname "$0")"
+
+stack_name=vscode-telemetry-dev
+domain=ryuichi.io
+
+cert_domain="*.$domain"
+host_name="vscode-telemetry.$domain"
+
+hosted_zone_id=$(aws route53 list-hosted-zones | jq -r ".HostedZones | map(select(.Name == \"$domain.\") | .Id)[0]" | sed 's#/hostedzone/##')
+cert_arn=$(aws acm list-certificates --region us-east-1 --query CertificateSummaryList | jq -r "map(select(.DomainName == \"$cert_domain\") | .CertificateArn)[0]")
+
+aws cloudformation deploy --stack-name "$stack_name" \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --template-file "$current_dir/template.json" \
+    --no-fail-on-empty-changeset \
+    --parameter-overrides \
+        "HostedZoneId=$hosted_zone_id" \
+        "DomainName=$host_name" \
+        "CertificateArn=$cert_arn"
