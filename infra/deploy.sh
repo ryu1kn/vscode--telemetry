@@ -15,7 +15,7 @@ cert_arn=$(aws acm list-certificates --region us-east-1 --query CertificateSumma
 
 aws cloudformation deploy --stack-name "$stack_name" \
     --capabilities CAPABILITY_NAMED_IAM \
-    --template-file "$current_dir/template.json" \
+    --template-file "$current_dir/template.yaml" \
     --no-fail-on-empty-changeset \
     --parameter-overrides \
         "HostedZoneId=$hosted_zone_id" \
