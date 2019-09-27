@@ -29,7 +29,13 @@ Resources:
                   - acm:GetCertificate
                   - acm:ListCertificates
                   - acm:ListTagsForCertificate
+                  - apigateway:DELETE
+                  - apigateway:GET
+                  - apigateway:HEAD
+                  - apigateway:OPTIONS
+                  - apigateway:PATCH
                   - apigateway:POST
+                  - apigateway:PUT
                   - cloudformation:CreateChangeSet
                   - cloudformation:CreateStack
                   - cloudformation:DeleteStack
@@ -44,6 +50,28 @@ Resources:
                   - cloudfront:GetDistributionConfig
                   - cloudfront:TagResource
                   - cloudfront:UpdateDistribution
+                  - iam:CreateRole
+                  - iam:DeleteRole
+                  - iam:GetRole
+                  - iam:DeleteRolePolicy
+                  - iam:PassRole
+                  - iam:PutRolePolicy
+                  - lambda:AddPermission
+                  - lambda:CreateFunction
+                  - lambda:DeleteFunction
+                  - lambda:GetFunction
+                  - lambda:GetFunctionConfiguration
+                  - lambda:RemovePermission
+                  - lambda:UpdateFunctionCode
+                  - lambda:UpdateFunctionConfiguration
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:DeleteLogGroup
+                  - logs:DeleteLogStream
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                  - logs:PutLogEvents
+                  - logs:PutRetentionPolicy
                   - route53:ChangeResourceRecordSets
                   - route53:GetChange
                   - route53:GetHostedZone
