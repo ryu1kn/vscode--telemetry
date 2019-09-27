@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: VS Code Telemetry CI group/user
+Parameters:
+  CiUserName:
+    Description: User name for CI
+    Type: String
+Resources:
+  CiUser:
+    Type: "AWS::IAM::User"
+    Properties:
+      Groups:
+        - !Ref CiGroup
+      Path: "/"
+      UserName: !Ref CiUserName
+  CiGroup:
+    Type: "AWS::IAM::Group"
+    Properties:
+      GroupName: vscode-telemetry-ci
+      Path: "/"
+      Policies:
+        - PolicyName: vscode-telemetry-ci-20190927
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: Stmt1489901204000
+                Effect: Allow
+                Action:
+                  - acm:DescribeCertificate
+                  - acm:GetCertificate
+                  - acm:ListCertificates
+                  - acm:ListTagsForCertificate
+                  - apigateway:DELETE
+                  - apigateway:GET
+                  - apigateway:HEAD
+                  - apigateway:OPTIONS
+                  - apigateway:PATCH
+                  - apigateway:POST
+                  - apigateway:PUT
+                  - cloudformation:CreateStack
+                  - cloudformation:DeleteStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:UpdateStack
+                  - cloudformation:UpdateTerminationProtection
+                  - cloudfront:CreateCloudFrontOriginAccessIdentity
+                  - cloudfront:CreateDistribution
+                  - cloudfront:DeleteDistribution
+                  - cloudfront:GetDistribution
+                  - cloudfront:GetDistributionConfig
+                  - cloudfront:UpdateDistribution
+                  - iam:CreateRole
+                  - iam:DeleteRole
+                  - iam:GetRole
+                  - iam:DeleteRolePolicy
+                  - iam:PassRole
+                  - iam:PutRolePolicy
+                  - route53:ChangeResourceRecordSets
+                  - route53:GetChange
+                  - route53:GetHostedZone
+                Resource: "*"

@@ -4,10 +4,12 @@ node_js:
 env:
   global:
   - AWS_REGION=ap-southeast-2
+  - secure: sE9kBry2Eu2QAeRHBbjYovcb/P+P5pLhgM4wcHzXP4wDhS6t59E9Vu8Huzm0D/qJ4/lK1i7GHXTWVEccFNaY5NasNrbFJ/2CjnSkH0lomDd8AN7HpCcFel8l00omh4yC3B98FJjJ64lsDamwqSpigFBghc82AlUXjvddV3Curs59qku1hq0IOB2ne88a6Kiq6BOCDvUl0kyVbQM2OHpeXHdgSCqRuVmwfJoqH0dEi4SaZiH9i4elMEg0Wnwy9QY3S2zNIxhHrs3w6O/r2AQy4m3ihHE4iCRdbpYl2d0rSdHW6MQnt1Mqxh8/k0Imc/AuA5lBTU1xDYKp4CSf5srhm7V2JuLBJwQhQpu/iGvjeoV6e3ppYFziiA9P95/MQ3BRRVOofk1J6cjfx2JM74KsdX5yI5Re0VxJGBYq4T/70dweOQ7e9yjHrN10ECOO7TQfVN+tHISYl7bYVYtbTY8YAQ2Dvi3ra4tE7e7DBokBIDgS4837TQ0VwRPj9ayecj6Cp5/wRqxr2Xp8omiaSGGghheiaOIDuZYZZgAY1z5bytsP7LBpZNsc1rk9I1b8o651F9vuTrmo3PAOqMMWGN1V8vdx9L59GAMo6ZHYPBkdfdw3HK+O0YA6ok2PV+tQHBNjQlXqvDmSioqtOwZzqqUx3SJN7NQ38Yl101n/gPyagPg=
+  - secure: WNflY/PuBQ6Li4uizz8RjjEkPoQ2tsgukqBzOfKr/i729E0uwQ1t9kOJUXtFOfIJlzTzfnBZeLJ717g1xSZDXcOXpDTL8tZrtMD8eQrH4vlR2mqim4dqxmWrxCMh5sPzthDfoWbjmcEBQI+gYjk4dIlWE1+avEANcKrDJRpnf2x2n1IwHyZYfSOxysCkq5Y5C1DAvVlGkt83hBnQRjGBSl+h+jXSJ9BKGYQOLYVPbBSzBkhD3BB4MV2CRgn/p/vc+DWLTlk/gfcgY/9pHiyIF2Iz7Gt0mV59F6be7nX+ZU5dFz7O3Gnx/70Kikc6kHXqqmezx9B8mKSQ0+IbmDh5liR/hn0AOm693eBl+tMRHziDmdU9XbaU0TlsqzC+kd4CpPjUsifW0hCkB3qV0Sg+2+FMKKEZuz6CnU12JPjxb3FpBc5s2oLUz3+PtGxx3OmrxKN1yuA1UJupljKFENj5HpRIFP26zmaBAu+lDmQ7+MJBmx5XQgV+6cGCAqcE9q3nh/xMOw6PA3wI/Pb/xGHeFL50BnWtLKPiBMLvBQ9CUfANnfkNGB8AE6OiRXX0CSgSegmhtqbHCk3iftdT72lGrcHKuCxfgaOhIgj70JCqnMf865eu1CLdjy+Z4/cT0gnTnUAFme4WCkDQdwOa6rFOMNsWpf+OnqFqBQQhIYbq7Fc=
 addons:
   apt:
     sources:
-    - sourceline: 'deb http://us.archive.ubuntu.com/ubuntu vivid main universe'
+    - sourceline: deb http://us.archive.ubuntu.com/ubuntu vivid main universe
     packages:
     - jq
 before_install:
@@ -16,4 +18,5 @@ before_install:
 - pip install awscli --user
 - aws configure set s3.signature_version s3v4
 script:
+- pwd
 - travis-build.sh
