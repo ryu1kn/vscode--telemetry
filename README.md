@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ryu1kn/vscode--telemetry.svg?branch=master)](https://travis-ci.org/ryu1kn/vscode--telemetry)
 
 # Visual Studio Code Telemetry
 
