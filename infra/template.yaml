@@ -71,7 +71,7 @@ Resources:
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: VS Code Telemetry
+      Name: !Sub VS Code Telemetry - ${AWS::StackName}
       Description: API used for VS Code Telemetry requests
       FailOnWarnings: true
       Body:

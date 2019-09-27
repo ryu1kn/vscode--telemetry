@@ -5,8 +5,23 @@ Receive plugin usage data to help improve plugins.
 
 ## Usage
 
+Export `ENV_NAME` environment variable, then:
+
 To deploy
 
 ```sh
 infra/deploy.sh
+```
+
+To undeploy
+
+```sh
+infra/undeploy.sh
+```
+
+To test if the environment is ok
+
+```sh
+export API_DOMAIN=<domain name of the API>
+./test.sh
 ```
