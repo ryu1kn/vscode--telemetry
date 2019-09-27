@@ -17,8 +17,7 @@ Resources:
   RecordSet:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId:
-        Ref: HostedZoneId
+      HostedZoneId: !Ref HostedZoneId
       Name: !Sub ${DomainName}.
       Type: A
       AliasTarget:
@@ -29,7 +28,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-        - Ref: DomainName
+        - !Ref DomainName
         DefaultCacheBehavior:
           ForwardedValues:
             Cookies:
@@ -64,8 +63,7 @@ Resources:
             OriginProtocolPolicy: https-only
         PriceClass: PriceClass_All
         ViewerCertificate:
-          AcmCertificateArn:
-            Ref: CertificateArn
+          AcmCertificateArn: !Ref CertificateArn
           MinimumProtocolVersion: TLSv1
           SslSupportMethod: sni-only
   RestApi:
@@ -94,13 +92,17 @@ Resources:
                   schema:
                     $ref: '#/definitions/Empty'
               x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub:
+                  - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations
+                  - LambdaArn: !GetAtt LambdaFunction.Arn
                 responses:
                   default:
-                    statusCode: '200'
-                passthroughBehavior: when_no_match
-                requestTemplates:
-                  application/json: '{"statusCode": 200}'
-                type: mock
+                    statusCode: "200"
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws"
         definitions:
           Empty:
             type: object
@@ -108,25 +110,83 @@ Resources:
   ApiStage:
     Type: AWS::ApiGateway::Stage
     Properties:
-      DeploymentId:
-        Ref: ApiDeployment
+      DeploymentId: !Ref ApiDeployment
       MethodSettings:
       - HttpMethod: '*'
         ResourcePath: /*
         ThrottlingRateLimit: 10
         ThrottlingBurstLimit: 20
-      RestApiId:
-        Ref: RestApi
+      RestApiId: !Ref RestApi
       StageName: !FindInMap [Variables, Api, StageName]
   ApiDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
-      RestApiId:
-        Ref: RestApi
+      RestApiId: !Ref RestApi
+  LambdaFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:DescribeLogStreams
+            - logs:PutLogEvents
+            Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*
+          - Effect: Allow
+            Action:
+            - ec2:CreateNetworkInterface
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DeleteNetworkInterface
+            Resource: '*'
+          - Effect: Allow
+            Action:
+            - cloudwatch:*
+            Resource: '*'
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-LambdaFunction
+      Description: VS Code Telemetry app
+      Handler: index.handler
+      Role: !GetAtt LambdaFunctionRole.Arn
+      Code:
+        ZipFile: |
+          exports.handler = async function(event, context) {
+            console.log("EVENT: \n" + JSON.stringify(event, null, 2))
+            return context.logStreamName
+          }
+      Runtime: nodejs8.10
+      Timeout: "3"
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${LambdaFunction}
+      RetentionInDays: 14
 Outputs:
   RestApiId:
     Description: Root URL of the API
-    Value:
-      Ref: RestApi
+    Value: !Ref RestApi
   ApiStageName:
     Value: !FindInMap [Variables, Api, StageName]
