@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+- '10.15'
+env:
+  global:
+  - AWS_REGION=ap-southeast-2
+addons:
+  apt:
+    sources:
+    - sourceline: 'deb http://us.archive.ubuntu.com/ubuntu vivid main universe'
+    packages:
+    - jq
+before_install:
+- wget https://bootstrap.pypa.io/get-pip.py
+- python3 get-pip.py --user
+- pip install awscli --user
+- aws configure set s3.signature_version s3v4
+script:
+- travis-build.sh
